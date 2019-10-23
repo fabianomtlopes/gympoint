@@ -1,13 +1,9 @@
 import { Router } from 'express';
 
-import AdminController from './app/controllers/AdminController';
+import UserController from './app/controllers/UserController';
 
 const routes = new Router();
 
-routes.post('/users', AdminController.store);
-
-routes.get('/', (req, res) => {
-  return res.json({ message: 'Teste para o Gyn' });
-});
+routes.post('/users', UserController.store);
 
 export default routes;

@@ -2,10 +2,10 @@ import Sequelize from 'sequelize';
 // Necessario importar os dados do DB
 import databaseConfig from '../config/database';
 // importar  os models da app
-import Admin from '../app/models/Admin';
+import User from '../app/models/User';
 import Students from '../app/models/Students';
 
-const models = [Admin, Students];
+const models = [User, Students];
 
 class Database {
   constructor() {
