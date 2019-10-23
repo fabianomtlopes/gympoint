@@ -1,18 +1,22 @@
 import Sequelize, { Model } from 'sequelize';
+import bcrypt from 'bcryptjs';
 
-class Admin extends Model {
+class Users extends Model {
   static init(sequelize) {
     super.init(
       {
         name: Sequelize.STRING,
         email: Sequelize.STRING,
+        password: Sequelize.VIRTUAL,
         password_hash: Sequelize.STRING,
       },
       {
         sequelize,
       }
     );
+    // funcionalidade do sequelize (hook)
+    this.addHook('beforeSave', users => {});
   }
 }
 
-export default Admin;
+export default Users;
