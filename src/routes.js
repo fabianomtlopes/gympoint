@@ -18,6 +18,6 @@ routes.put('/users', UserController.update);
 // Para insercao de estudantes
 routes.post('/students', StudentsController.store);
 // Para alterar os estudantes
-routes.put('students/:id', StudentsController.update);
+routes.put('/students/:id', StudentsController.update);
 
 export default routes;
