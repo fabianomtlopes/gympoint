@@ -7,7 +7,7 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      nome: {
+      name: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -16,16 +16,16 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
-      idade: {
+      age: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      peso: {
-        type: Sequelize.STRING,
+      weight: {
+        type: Sequelize.FLOAT,
         allowNull: false,
       },
-      altura: {
-        type: Sequelize.STRING,
+      height: {
+        type: Sequelize.FLOAT,
         allowNull: false,
       },
       created_at: {
