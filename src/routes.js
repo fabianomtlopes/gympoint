@@ -32,6 +32,7 @@ routes.put('/plans/:id', PlanController.update);
 routes.delete('/plans/:id', PlanController.delete);
 
 // Matriculation
+routes.get('/matriculation', MatriculationController.index);
 routes.post('/matriculation', MatriculationController.store);
 
 export default routes;

@@ -2,20 +2,44 @@ import * as Yup from 'yup';
 import { addMonths, parseISO } from 'date-fns';
 // import pt from 'date-fns/locale/pt';
 
-import Matriculation from '../models/Matriculations';
 import Plans from '../models/Plans';
-import Student from '../models/Students';
+import Students from '../models/Students';
+import Matriculation from '../models/Matriculations';
 
 class MatriculationController {
+  async index(req, res) {
+    const { page = 1 } = req.body;
+    const matriculations = await Matriculation.findAll({
+      order: ['id'],
+      attributes: ['id', 'start_date', 'end_date', 'price', 'past'],
+      limit: 20,
+      offset: (page - 1) * 20,
+      include: [
+        {
+          model: Students,
+          as: 'student',
+          attributes: ['id', 'name'],
+        },
+        {
+          model: Plans,
+          as: 'plan',
+          attributes: ['id', 'title'],
+        },
+      ],
+    });
+
+    return res.json(matriculations);
+  }
+
   async store(req, res) {
     const schema = Yup.object().shape({
-      start_date: Yup.date().required(),
-      plan_id: Yup.number()
-        .positive()
-        .required(),
       student_id: Yup.number()
         .positive()
         .required(),
+      plan_id: Yup.number()
+        .positive()
+        .required(),
+      start_date: Yup.date().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -26,7 +50,7 @@ class MatriculationController {
     const plan = await Plans.findOne({
       where: { id: plan_id },
     });
-    const student = await Student.findOne({
+    const student = await Students.findOne({
       where: { id: student_id },
     });
 
@@ -44,8 +68,8 @@ class MatriculationController {
     const priceToPay = plan.price * plan.duration;
 
     const matriculation = await Matriculation.create({
-      student_id,
-      plan_id,
+      student_id: student.id,
+      plan_id: plan.id,
       start_date,
       end_date: endDate,
       price: priceToPay,
