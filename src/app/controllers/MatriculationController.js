@@ -48,7 +48,7 @@ class MatriculationController {
       plan_id,
       start_date,
       end_date: endDate,
-      ptice: priceToPay,
+      price: priceToPay,
     });
 
     res.json({
