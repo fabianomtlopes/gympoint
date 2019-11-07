@@ -4,8 +4,10 @@ import databaseConfig from '../config/database';
 // importar  os models da app
 import User from '../app/models/User';
 import Students from '../app/models/Students';
+import Plans from '../app/models/Plans';
+import Matriculations from '../app/models/Matriculations';
 
-const models = [User, Students];
+const models = [User, Students, Plans, Matriculations];
 
 class Database {
   constructor() {

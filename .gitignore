@@ -1,0 +1,10 @@
+node_modules/
+.editorconfig
+.eslintrc.js
+.prettierrc
+.sequelizerc
+.vscode
+tmp/
+package.json
+nodemon.json
+yarn.lock
