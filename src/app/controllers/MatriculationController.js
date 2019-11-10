@@ -5,6 +5,8 @@ import { addMonths, parseISO } from 'date-fns';
 import Plans from '../models/Plans';
 import Students from '../models/Students';
 import Matriculation from '../models/Matriculations';
+import Mail from '../../lib/Mail';
+// import Notification from '../schemas/Notification';
 
 class MatriculationController {
   async index(req, res) {
@@ -75,7 +77,41 @@ class MatriculationController {
       price: priceToPay,
     });
 
-    res.json({
+    // .then(result => console.log(result.id))
+
+    // student_id: student.id, plan_id: plan.id
+    const matriculations = await Matriculation.findOne({
+      where: { student_id: req.body.student_id, plan_id: req.body.plan_id },
+      attributes: ['id', 'start_date', 'end_date', 'price', 'past'],
+      order: [['created_at', 'DESC']],
+      include: [
+        {
+          model: Students,
+          as: 'student',
+          attributes: ['id', 'name'],
+        },
+        {
+          model: Plans,
+          as: 'plan',
+          attributes: ['id', 'title'],
+        },
+      ],
+    });
+
+    await Mail.sendMail({
+      to: `${matriculations.student.name} <${matriculations.student.email}>`,
+      subject: 'Matrícula da GymPoint',
+      template: 'matriculation',
+      context: {
+        name: matriculations.student.name,
+        title: matriculations.plan.title,
+        dataInicio: startDate,
+        dataFinal: endDate,
+        price: priceToPay,
+      },
+    });
+
+    return res.json({
       matriculation,
     });
   }
