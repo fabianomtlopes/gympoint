@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
-import { addMonths, parseISO } from 'date-fns';
+import { addMonths, parseISO, format } from 'date-fns';
+import pt from 'date-fns/locale/pt';
 // import pt from 'date-fns/locale/pt';
 
 import Plans from '../models/Plans';
@@ -77,9 +78,6 @@ class MatriculationController {
       price: priceToPay,
     });
 
-    // .then(result => console.log(result.id))
-
-    // student_id: student.id, plan_id: plan.id
     const matriculations = await Matriculation.findOne({
       where: { student_id: req.body.student_id, plan_id: req.body.plan_id },
       attributes: ['id', 'start_date', 'end_date', 'price', 'past'],
@@ -88,7 +86,7 @@ class MatriculationController {
         {
           model: Students,
           as: 'student',
-          attributes: ['id', 'name'],
+          attributes: ['id', 'name', 'email'],
         },
         {
           model: Plans,
@@ -105,15 +103,42 @@ class MatriculationController {
       context: {
         name: matriculations.student.name,
         title: matriculations.plan.title,
-        dataInicio: startDate,
-        dataFinal: endDate,
-        price: priceToPay,
+        dataInicio: format(
+          matriculation.start_date,
+          "'dia' dd 'de' MMM' de'yyyy', às' H:mm'h' ",
+          {
+            locale: pt,
+          }
+        ),
+        dataFinal: format(
+          matriculations.end_date,
+          " 'dia' dd 'de' MMM' de' yyyy', às' H:mm'h' ",
+          {
+            locale: pt,
+          }
+        ),
+        price: priceToPay.toLocaleString('pt-BR', {
+          style: 'currency',
+          currency: 'BRL',
+        }),
       },
     });
 
     return res.json({
       matriculation,
     });
+  }
+
+  async delete(req, res) {
+    const matriculation = await Matriculation.findByPk(req.params.id);
+    if (!matriculation) {
+      return res
+        .status(400)
+        .json({ error: 'This matriculation does not exists.' });
+    }
+    const destroyMatriculation = matriculation.destroy();
+
+    return res.json(destroyMatriculation);
   }
 }
 

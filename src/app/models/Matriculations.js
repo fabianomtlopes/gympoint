@@ -9,7 +9,7 @@ class Matriculations extends Model {
         end_date: Sequelize.DATE,
         price: Sequelize.NUMERIC,
         created_at: Sequelize.DATE,
-        canceled_at: Sequelize.DATE,
+        updated_at: Sequelize.DATE,
         past: {
           type: Sequelize.VIRTUAL,
           get() {
