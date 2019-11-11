@@ -66,7 +66,6 @@ class MatriculationController {
     }
 
     const startDate = parseISO(start_date);
-
     const endDate = addMonths(startDate, plan.duration);
     const priceToPay = plan.price * plan.duration;
 
@@ -96,36 +95,66 @@ class MatriculationController {
       ],
     });
 
-    await Mail.sendMail({
-      to: `${matriculations.student.name} <${matriculations.student.email}>`,
-      subject: 'Matrícula da GymPoint',
-      template: 'matriculation',
-      context: {
-        name: matriculations.student.name,
-        title: matriculations.plan.title,
-        dataInicio: format(
-          matriculation.start_date,
-          "'dia' dd 'de' MMM' de'yyyy', às' H:mm'h' ",
-          {
-            locale: pt,
-          }
-        ),
-        dataFinal: format(
-          matriculations.end_date,
-          " 'dia' dd 'de' MMM' de' yyyy', às' H:mm'h' ",
-          {
-            locale: pt,
-          }
-        ),
-        price: priceToPay.toLocaleString('pt-BR', {
-          style: 'currency',
-          currency: 'BRL',
-        }),
-      },
-    });
-
     return res.json({
       matriculation,
+    });
+  }
+
+  async update(req, res) {
+    const schema = Yup.object().shape({
+      student_id: Yup.number()
+        .positive()
+        .required(),
+      plan_id: Yup.number()
+        .positive()
+        .required(),
+      start_date: Yup.date().required(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validations fails.' });
+    }
+
+    const matriculation = await Matriculation.findByPk(req.params.id);
+    if (!matriculation) {
+      res.status(400).json({ error: 'This matriculation, does not exists.' });
+    }
+
+    const plan = await Plans.findOne({
+      where: { id: matriculation.plan_id },
+    });
+    const student = await Students.findOne({
+      where: { id: matriculation.student_id },
+    });
+
+    if (!plan) {
+      res.status(400).json({ error: 'Does not exists this plan.' });
+    }
+
+    if (!student) {
+      res.status(400).json({ error: 'Does not exists this student.' });
+    }
+
+    const startDate = parseISO(matriculation.start_date);
+    const endDate = addMonths(startDate, plan.duration);
+    const priceToPay = plan.price * plan.duration;
+
+    const {
+      id,
+      student_id,
+      plan_id,
+      start_date: startDate,
+      end_date: endDate,
+      price: priceToPay,
+    } = await matriculation.update(req.body);
+
+    return res.json({
+      id,
+      student_id,
+      plan_id,
+      start_date,
+      endDate,
+      priceToPay,
     });
   }
 
