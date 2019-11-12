@@ -151,23 +151,19 @@ class MatriculationController {
     const startDate = parseISO(start_date);
     const endDate = addMonths(startDate, plan.duration);
     const priceToPay = plan.price * plan.duration;
-
-    const {
-      id,
-      student_id,
-      plan_id,
-      // start_date: startDate,
-      // end_date: endDate,
-      // price: priceToPay,
-    } = await matriculation.update();
+    await matriculation.update({
+      id: matriculation.id,
+      student_id: req.body.student_id,
+      plan_id: req.body.plan_id,
+      start_date: startDate,
+      end_date: endDate,
+      price: priceToPay,
+    });
+    // @fabianomtlopes matriculation já é o registro encontrado, nao? Se sim, no metodo .update
+    // vc vai passar no primeiro parametro os campos que vc quer atualizar
 
     return res.json({
-      id,
-      student_id,
-      plan_id,
-      start_date,
-      endDate,
-      priceToPay,
+      matriculation,
     });
   }
 
