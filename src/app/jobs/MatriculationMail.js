@@ -1,4 +1,4 @@
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 import Mail from '../../lib/Mail';
 
@@ -10,6 +10,8 @@ class MatriculationMail {
   async handle({ data }) {
     const { matriculations } = data;
 
+    // console.log('A fila andou... amém.');
+
     await Mail.sendMail({
       to: `${matriculations.student.name} <${matriculations.student.email}>`,
       subject: 'Matrícula da GymPoint',
@@ -18,20 +20,20 @@ class MatriculationMail {
         name: matriculations.student.name,
         title: matriculations.plan.title,
         dataInicio: format(
-          matriculation.start_date,
+          parseISO(matriculations.start_date),
           "'dia' dd 'de' MMM' de'yyyy', às' H:mm'h' ",
           {
             locale: pt,
           }
         ),
         dataFinal: format(
-          matriculations.end_date,
+          parseISO(matriculations.end_date),
           " 'dia' dd 'de' MMM' de' yyyy', às' H:mm'h' ",
           {
             locale: pt,
           }
         ),
-        price: priceToPay.toLocaleString('pt-BR', {
+        price: matriculations.price.toLocaleString('pt-BR', {
           style: 'currency',
           currency: 'BRL',
         }),

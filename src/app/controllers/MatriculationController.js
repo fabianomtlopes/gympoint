@@ -6,7 +6,8 @@ import pt from 'date-fns/locale/pt';
 import Plans from '../models/Plans';
 import Students from '../models/Students';
 import Matriculation from '../models/Matriculations';
-import Mail from '../../lib/Mail';
+import MatriculationMail from '../jobs/MatriculationMail';
+import Queue from '../../lib/Queue';
 // import Notification from '../schemas/Notification';
 
 class MatriculationController {
@@ -34,6 +35,9 @@ class MatriculationController {
     return res.json(matriculations);
   }
 
+  /**
+   * Store
+   */
   async store(req, res) {
     const schema = Yup.object().shape({
       student_id: Yup.number()
@@ -95,11 +99,18 @@ class MatriculationController {
       ],
     });
 
+    await Queue.add(MatriculationMail.key, {
+      matriculations,
+    });
+
     return res.json({
       matriculation,
     });
   }
 
+  /**
+   * Update
+   */
   async update(req, res) {
     const schema = Yup.object().shape({
       student_id: Yup.number()
@@ -135,7 +146,9 @@ class MatriculationController {
       res.status(400).json({ error: 'Does not exists this student.' });
     }
 
-    const startDate = parseISO(matriculation.start_date);
+    const { start_date } = req.body;
+
+    const startDate = parseISO(start_date);
     const endDate = addMonths(startDate, plan.duration);
     const priceToPay = plan.price * plan.duration;
 
@@ -143,10 +156,10 @@ class MatriculationController {
       id,
       student_id,
       plan_id,
-      start_date: startDate,
-      end_date: endDate,
-      price: priceToPay,
-    } = await matriculation.update(req.body);
+      // start_date: startDate,
+      // end_date: endDate,
+      // price: priceToPay,
+    } = await matriculation.update();
 
     return res.json({
       id,
@@ -157,6 +170,10 @@ class MatriculationController {
       priceToPay,
     });
   }
+
+  /**
+   * Delete
+   */
 
   async delete(req, res) {
     const matriculation = await Matriculation.findByPk(req.params.id);
