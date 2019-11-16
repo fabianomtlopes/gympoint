@@ -17,7 +17,10 @@ const routes = new Router();
 routes.post('/sessions', SessionController.store);
 routes.post('/users', UserController.store);
 
-// utilizando o middleware global
+// Checkins
+routes.post('/students/:studentId/checkins', CheckinsController.store);
+
+// utilizando o middleware global - abaixo somente com token de admin
 routes.use(authMiddleware);
 // abaixo deste routes de middleware tudo sera verificado com ele
 routes.put('/users', UserController.update);
@@ -37,8 +40,5 @@ routes.get('/matriculation', MatriculationController.index);
 routes.post('/matriculation', MatriculationController.store);
 routes.delete('/matriculation/:id', MatriculationController.delete);
 routes.put('/matriculation/:id', MatriculationController.update);
-
-// Checkins
-routes.post('/checkins', CheckinsController.store);
 
 export default routes;

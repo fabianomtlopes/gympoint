@@ -1,7 +1,5 @@
 import * as Yup from 'yup';
-import { addMonths, parseISO, format } from 'date-fns';
-import pt from 'date-fns/locale/pt';
-// import pt from 'date-fns/locale/pt';
+import { addMonths, parseISO } from 'date-fns';
 
 import Plans from '../models/Plans';
 import Students from '../models/Students';
@@ -159,8 +157,6 @@ class MatriculationController {
       end_date: endDate,
       price: priceToPay,
     });
-    // @fabianomtlopes matriculation já é o registro encontrado, nao? Se sim, no metodo .update
-    // vc vai passar no primeiro parametro os campos que vc quer atualizar
 
     return res.json({
       matriculation,
