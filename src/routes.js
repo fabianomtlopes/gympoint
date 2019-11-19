@@ -8,6 +8,7 @@ import PlanController from './app/controllers/PlanController';
 import SessionController from './app/controllers/SessionController';
 import MatriculationController from './app/controllers/MatriculationController';
 import CheckinsController from './app/controllers/CheckinsControllers';
+import HelpOrdersController from './app/controllers/HelpOrdersControllers';
 
 import authMiddleware from './app/middlewares/auth';
 
@@ -19,6 +20,9 @@ routes.post('/users', UserController.store);
 
 // Checkins
 routes.post('/students/:studentId/checkins', CheckinsController.store);
+// Help Orders
+routes.post('/students/:studentId/help-orders', HelpOrdersController.store);
+routes.get('/students/:studentId/help-orders', HelpOrdersController.listAsk);
 
 // utilizando o middleware global - abaixo somente com token de admin
 routes.use(authMiddleware);
@@ -40,5 +44,12 @@ routes.get('/matriculation', MatriculationController.index);
 routes.post('/matriculation', MatriculationController.store);
 routes.delete('/matriculation/:id', MatriculationController.delete);
 routes.put('/matriculation/:id', MatriculationController.update);
+
+// Checkins - verificacao de todos os checkins por estudantes
+routes.get('/students/:studentId/checkins', CheckinsController.index);
+
+// Help Orders - resposta
+routes.put('/students/:studentId/help-orders', HelpOrdersController.update);
+routes.get('/students/help-orders', HelpOrdersController.index);
 
 export default routes;

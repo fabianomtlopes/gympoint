@@ -4,6 +4,33 @@ import Checkins from '../models/Checkins';
 import Students from '../models/Students';
 
 class CheckinsControllers {
+  async index(req, res) {
+    const student = await Students.findOne({
+      where: { id: req.params.studentId },
+    });
+
+    if (!student) {
+      return res.status(400).json({ error: 'Does not exists this student.' });
+    }
+
+    const studentAllCheckin = await Checkins.findAll({
+      where: { student_id: req.params.studentId },
+      include: [
+        {
+          model: Students,
+          as: 'student',
+          attributes: ['name'],
+        },
+      ],
+    });
+
+    // const { student_id, created_at } = studentAllCheckin;
+
+    return res.json({
+      studentAllCheckin,
+    });
+  }
+
   async store(req, res) {
     const student = await Students.findOne({
       where: { id: req.params.studentId },
