@@ -29,7 +29,7 @@ class AnswerMail {
         question: questionAnswer.question,
         answer: questionAnswer.answer,
         answer_at: format(
-          parseISO(questionAnswer.answer_at),
+          parseISO(questionAnswer.updated_at),
           " 'dia' dd 'de' MMM' de' yyyy', às' H:mm'h' ",
           {
             locale: pt,

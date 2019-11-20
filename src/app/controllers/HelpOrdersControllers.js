@@ -80,15 +80,6 @@ class HelpOrdersController {
       return res.status(400).json({ error: 'Validations fails.' });
     }
 
-    const date = new Date().getTime();
-    // const { date } = req.query;
-
-    if (!date) {
-      return res.status(400).json({ error: 'Invalid date.' });
-    }
-
-    const answerDate = Number(date);
-
     const answerQuestion = await HelpOrders.findOne({
       where: {
         student_id: req.params.studentId,
@@ -101,6 +92,8 @@ class HelpOrdersController {
         .json({ error: 'Impossible to find this request to answer.' });
     }
 
+    const date = new Date().getTime();
+    const answerDate = Number(date);
     const { answer } = req.body;
 
     // const { id, title, duration, price } = await plans.update(req.body);
@@ -110,10 +103,7 @@ class HelpOrdersController {
       answer_at: answerDate,
     });
 
-    const answerStudent = await HelpOrders.findOne({
-      where: { student_id: req.params.studentId },
-      attributes: ['id', 'question', 'answer', 'answer_at', 'created_at'],
-      order: [['answer_at', 'DESC']],
+    const answerStudent = await HelpOrders.findByPk(answerQuestion.id, {
       include: [
         {
           model: Students,
