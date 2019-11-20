@@ -27,9 +27,10 @@ Crie um usuário administrador utilizando a funcionalidade de seeds do sequelize
 Para criar um seed utilize o comando:
 
 ` yarn sequelize seed:generate --name admin-user `
-No arquivo gerado na pasta src/database/seeds adicione o código referente à criação de um usuário administrador:
 
-`const bcrypt = require("bcryptjs");
+No arquivo gerado na pasta ` src/database/seeds ` adicione o código referente à criação de um usuário administrador:
+```
+const bcrypt = require("bcryptjs");
 
 module.exports = {
   up: QueryInterface => {
@@ -49,10 +50,12 @@ module.exports = {
   },
 
   down: () => {}
-}; `
+}; 
+```
 Agora execute:
 
-`yarn sequelize db:seed:all`
+` yarn sequelize db:seed:all `
+
 Agora você tem um usuário na sua base de dados, utilize esse usuário para todos logins daqui pra frente.
 
 A autenticação deve ser feita utilizando JWT.
