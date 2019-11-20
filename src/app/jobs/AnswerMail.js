@@ -2,9 +2,9 @@ import { format, parseISO } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 import Mail from '../../lib/Mail';
 
-class QuestionMail {
+class AnswerMail {
   get key() {
-    return 'QuestionMail';
+    return 'AnswerMail';
   }
 
   async handle({ data }) {
@@ -29,7 +29,7 @@ class QuestionMail {
         question: questionAnswer.question,
         answer: questionAnswer.answer,
         answer_at: format(
-          parseISO(questionAnswer.end_date),
+          parseISO(questionAnswer.answer_at),
           " 'dia' dd 'de' MMM' de' yyyy', às' H:mm'h' ",
           {
             locale: pt,
@@ -40,4 +40,4 @@ class QuestionMail {
   }
 }
 
-export default new QuestionMail();
+export default new AnswerMail();

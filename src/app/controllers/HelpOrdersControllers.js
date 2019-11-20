@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 import HelpOrders from '../models/HelpOrders';
 import Students from '../models/Students';
-import QuestionMail from '../jobs/QuestionMail';
+import AnswerMail from '../jobs/AnswerMail';
 import Queue from '../../lib/Queue';
 
 class HelpOrdersController {
@@ -80,7 +80,8 @@ class HelpOrdersController {
       return res.status(400).json({ error: 'Validations fails.' });
     }
 
-    const { date } = req.query;
+    const date = new Date().getTime();
+    // const { date } = req.query;
 
     if (!date) {
       return res.status(400).json({ error: 'Invalid date.' });
@@ -110,7 +111,7 @@ class HelpOrdersController {
     });
 
     const answerStudent = await HelpOrders.findOne({
-      where: { student_id: answerQuestion.id },
+      where: { student_id: req.params.studentId },
       attributes: ['id', 'question', 'answer', 'answer_at', 'created_at'],
       order: [['answer_at', 'DESC']],
       include: [
@@ -123,13 +124,12 @@ class HelpOrdersController {
     });
 
     // To send email answering  stundent
-    await Queue.add(QuestionMail.key, {
+    await Queue.add(AnswerMail.key, {
       answerStudent,
     });
 
     return res.json({
       answerQuestion,
-      answerStudent,
     });
   }
 }
