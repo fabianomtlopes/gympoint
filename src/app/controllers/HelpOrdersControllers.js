@@ -15,6 +15,7 @@ class HelpOrdersController {
     });
   }
 
+  // Look for all questions without answer
   async listAsk(req, res) {
     const student = await Students.findOne({
       where: { id: req.params.studentId },
@@ -39,6 +40,7 @@ class HelpOrdersController {
     });
   }
 
+  // Save the question
   async store(req, res) {
     const schema = Yup.object().shape({
       question: Yup.string().required(),
@@ -67,6 +69,7 @@ class HelpOrdersController {
     });
   }
 
+  // Answer the questions e send an e-mail
   async update(req, res) {
     const schema = Yup.object().shape({
       // student_id: Yup.number().positive(),
@@ -106,12 +109,10 @@ class HelpOrdersController {
       answer_at: answerDate,
     });
 
-    const questionAnswer = await HelpOrders.findOne({
-      where: {
-        student_id: req.params.studentId,
-      },
-      order: [['answer_at', 'DESC']],
+    const answerStudent = await HelpOrders.findOne({
+      where: { student_id: answerQuestion.id },
       attributes: ['id', 'question', 'answer', 'answer_at', 'created_at'],
+      order: [['answer_at', 'DESC']],
       include: [
         {
           model: Students,
@@ -123,11 +124,12 @@ class HelpOrdersController {
 
     // To send email answering  stundent
     await Queue.add(QuestionMail.key, {
-      questionAnswer,
+      answerStudent,
     });
 
     return res.json({
       answerQuestion,
+      answerStudent,
     });
   }
 }
