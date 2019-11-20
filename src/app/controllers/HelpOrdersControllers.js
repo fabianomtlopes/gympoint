@@ -103,7 +103,7 @@ class HelpOrdersController {
       answer_at: answerDate,
     });
 
-    const answerStudent = await HelpOrders.findByPk(answerQuestion.id, {
+    const questionAnswer = await HelpOrders.findByPk(answerQuestion.id, {
       include: [
         {
           model: Students,
@@ -115,11 +115,12 @@ class HelpOrdersController {
 
     // To send email answering  stundent
     await Queue.add(AnswerMail.key, {
-      answerStudent,
+      questionAnswer,
     });
 
     return res.json({
       answerQuestion,
+      questionAnswer,
     });
   }
 }
