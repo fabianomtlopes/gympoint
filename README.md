@@ -12,9 +12,9 @@ Nesse primeiro desafio vamos criar algumas funcionalidades básicas que aprendem
 Um pouco sobre as ferramentas
 Você deverá criar a aplicação do zero utilizando o Express, além de precisar configurar as seguintes ferramentas:
 
-Sucrase + Nodemon;
-ESLint + Prettier + EditorConfig;
-Sequelize (Utilize PostgreSQL ou MySQL);
+*Sucrase + Nodemon;
+*ESLint + Prettier + EditorConfig;
+*Sequelize (Utilize PostgreSQL ou MySQL);
 Funcionalidades
 Abaixo estão descritas as funcionalidades que você deve adicionar em sua aplicação.
 
@@ -25,10 +25,10 @@ Crie um usuário administrador utilizando a funcionalidade de seeds do sequelize
 
 Para criar um seed utilize o comando:
 
-yarn sequelize seed:generate --name admin-user
+`yarn sequelize seed:generate --name admin-user`
 No arquivo gerado na pasta src/database/seeds adicione o código referente à criação de um usuário administrador:
 
-const bcrypt = require("bcryptjs");
+`const bcrypt = require("bcryptjs");
 
 module.exports = {
   up: QueryInterface => {
@@ -48,10 +48,10 @@ module.exports = {
   },
 
   down: () => {}
-};
+};`
 Agora execute:
 
-yarn sequelize db:seed:all
+`yarn sequelize db:seed:all`
 Agora você tem um usuário na sua base de dados, utilize esse usuário para todos logins daqui pra frente.
 
 A autenticação deve ser feita utilizando JWT.
@@ -61,6 +61,6 @@ Permita que alunos sejam mantidos (cadastrados/atualizados) na aplicação utili
 
 Utilize uma nova tabela no banco de dados chamada students.
 
-O cadastro de alunos só pode ser feito por administradores autenticados na aplicação.
+*O cadastro de alunos só pode ser feito por administradores autenticados na aplicação.
 
-O aluno não pode se autenticar no sistema, ou seja, não possui senha.
+*O aluno não pode se autenticar no sistema, ou seja, não possui senha.
